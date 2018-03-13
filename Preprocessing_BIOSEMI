@@ -1,0 +1,27 @@
+%%preprocessing for BIOSEMI (.bdf) data. You need MATLAB EEGLAB ERPLAB. You also need BIOSIG extension for EEGLAB (you can install it from
+%the extension manager
+
+
+% Clear memory
+clear
+% and the command window
+clc
+
+%Start EEGLAB
+[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+
+% Path to the parent folder, which contains the data folders for all subjects (you should add your own paths)
+home_path  = 'C:\Users\David\Documents\MATLAB\ERP_8_AliensII\Rawbdf\';
+% Path to the folder were you are going to keep the preprocessed files
+home_path2  = 'C:\Users\David\Documents\MATLAB\ERP_8_AliensII\Pre_processed\';
+%Additional Path to the folder were you keep your scripts
+home_path3  = 'C:\Users\David\Documents\MATLAB\ERP_8_AliensII\SCRIPTS';
+cd(home_path) % We go to the folder with the data
+
+S=dir('*.bdf'); %select the data (.bdf) files and store the names into S.name
+% We open the .bdf file, rereference to the mastoids (you have to do this with BIOSEMI data at this moment) and save the files in a .set file
+for i= 1:length(S)
+    RR = [home_path S(i).name];
+    EEG = pop_biosig(RR, 'ref',[65 66] ,'refoptions',{'keepref' 'off'}); %65 and 66 are the mastoids in my data
+    EEG = pop_saveset( EEG, 'filename', ['Raw_set',S(i).name],'filepath',home_path2);%filename is the Raw_set + the original name of the file
+end
